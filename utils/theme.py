@@ -268,34 +268,44 @@ def apply_theme() -> None:
 
 def page_header(icon: str, title: str, subtitle: str = "") -> None:
     """Consistent large page title + optional subtitle, replacing st.title().
-    Icon sits in a soft gradient badge, with a thin gradient rule underneath."""
+    Rendered as an "aurora" hero band — soft blurred gradient blobs behind an
+    icon badge, title, and subtitle — so every page opens with a distinct,
+    premium visual instead of a plain text heading."""
     subtitle_html = (
-        f'<div style="color:var(--muted);font-size:1.02rem;margin-top:0.3rem;">{subtitle}</div>'
+        f'<div style="color:var(--muted);font-size:1.02rem;margin-top:0.35rem;">{subtitle}</div>'
         if subtitle
         else ""
     )
-    st.markdown(
-        f"""
-        <div style="margin-bottom:1.75rem;">
+    html = f"""
+    <div style="position:relative;overflow:hidden;border-radius:20px;
+        padding:1.85rem 1.9rem 1.6rem;margin-bottom:1.85rem;
+        background:linear-gradient(165deg, #FBFBFE 0%, #F5F4FC 100%);
+        border:1px solid var(--border);box-shadow:var(--shadow-sm);">
+        <div style="position:absolute;top:-60px;right:-40px;width:220px;height:220px;
+            border-radius:50%;background:radial-gradient(circle, rgba(124,58,237,0.20), transparent 70%);
+            filter:blur(6px);"></div>
+        <div style="position:absolute;bottom:-70px;right:90px;width:180px;height:180px;
+            border-radius:50%;background:radial-gradient(circle, rgba(79,70,229,0.14), transparent 70%);
+            filter:blur(6px);"></div>
+        <div style="position:absolute;top:-40px;left:40%;width:140px;height:140px;
+            border-radius:50%;background:radial-gradient(circle, rgba(201,162,75,0.16), transparent 70%);
+            filter:blur(6px);"></div>
+        <div style="position:relative;">
             <div style="display:flex;align-items:center;gap:0.75rem;">
-                <div style="
-                    width:2.75rem;height:2.75rem;border-radius:12px;flex-shrink:0;
+                <div style="width:2.75rem;height:2.75rem;border-radius:12px;flex-shrink:0;
                     display:flex;align-items:center;justify-content:center;font-size:1.4rem;
                     background:linear-gradient(135deg, var(--brand-light), #F3EEFF);
-                    box-shadow: inset 0 0 0 1px rgba(79,70,229,0.12);
-                ">{icon}</div>
+                    box-shadow: inset 0 0 0 1px rgba(79,70,229,0.12);">{icon}</div>
                 <div style="font-family:'Lexend',sans-serif;font-size:1.95rem;font-weight:800;
-                    color:var(--ink);line-height:1.15;">
-                    {title}
-                </div>
+                    color:var(--ink);line-height:1.15;">{title}</div>
             </div>
             {subtitle_html}
             <div style="height:3px;width:56px;margin-top:1rem;border-radius:999px;
                 background:linear-gradient(90deg, var(--brand), var(--brand-2));"></div>
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    </div>
+    """
+    st.markdown(" ".join(line.strip() for line in html.splitlines()), unsafe_allow_html=True)
 
 
 def section_title(text: str) -> None:
