@@ -5,12 +5,13 @@ resolve it via crud.resolve_employees, returning a clear message instead of
 raising when an employee is not found or the query is ambiguous."""
 from __future__ import annotations
 
-from datetime import date, datetime
+import random
+from datetime import date, datetime, time as dtime, timedelta
 
 from langchain_core.tools import tool
 
 from db import crud
-from db.models import Employee
+from db.models import AttendanceStatus, Employee
 from services import payroll as payroll_service
 from services.payslip_generator import generate_pdf as render_payslip_pdf
 
@@ -131,6 +132,44 @@ def get_daily_attendance(on_date: str) -> str:
 
 
 @tool
+def seed_demo_attendance(
+    employee_query: str, start_date: str, end_date: str, present_probability: float = 0.85
+) -> str:
+    """Admin/testing utility: bulk-generate randomized attendance for ONE employee
+    across a date range (YYYY-MM-DD), for demo/testing data only — never use this
+    for real attendance. present_probability (0-1) is the chance each day in the
+    range gets marked present/late; the rest are left as absences (no record).
+    Days that already have a record are left untouched."""
+    employee, error = _resolve_single(employee_query)
+    if error:
+        return error
+    try:
+        start = datetime.strptime(start_date, "%Y-%m-%d").date()
+        end = datetime.strptime(end_date, "%Y-%m-%d").date()
+    except ValueError:
+        return "Dates must be in YYYY-MM-DD format."
+    if not (0 <= present_probability <= 1):
+        return "present_probability must be between 0 and 1."
+    if start > end:
+        return "start_date must be on or before end_date."
+
+    created = 0
+    d = start
+    while d <= end:
+        if crud.get_attendance_for_date(employee.id, d) is None and random.random() < present_probability:
+            is_late = random.random() < 0.1
+            status = AttendanceStatus.late if is_late else AttendanceStatus.present
+            check_in = datetime.combine(d, dtime(10 if is_late else 9, random.randint(0, 45)))
+            check_out = datetime.combine(d, dtime(18, random.randint(0, 45)))
+            crud.upsert_attendance(
+                employee_id=employee.id, on_date=d, check_in=check_in, check_out=check_out, status=status,
+            )
+            created += 1
+        d += timedelta(days=1)
+    return f"Seeded {created} demo attendance day(s) for {employee.full_name} between {start_date} and {end_date}."
+
+
+@tool
 def compute_payroll_preview(employee_query: str, month: int, year: int) -> str:
     """Preview an employee's payroll for a given month/year WITHOUT saving it
     or generating a PDF."""
@@ -199,6 +238,7 @@ ALL_TOOLS = [
     register_employee,
     get_attendance_summary,
     get_daily_attendance,
+    seed_demo_attendance,
     compute_payroll_preview,
     generate_payslip,
     run_monthly_payroll_all_employees,
