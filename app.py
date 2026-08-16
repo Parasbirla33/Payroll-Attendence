@@ -1,5 +1,5 @@
-"""Entry point: page config, DB init, and a landing page organized into the
-three access roles — Guard, Employee, Admin."""
+"""Entry point: page config, DB init, and a landing page organized into two
+access roles — Employee and Admin (guard accounts are managed under Admin)."""
 from __future__ import annotations
 
 import streamlit as st
@@ -14,12 +14,6 @@ apply_theme()
 init_db()
 
 page_header("🧾", "Attendance & Payroll", "AI-powered attendance tracking and payroll, in one place.")
-
-section_title("🛡️ Guard")
-with st.container(border=True):
-    st.markdown("**Guard Attendance**")
-    st.caption("Guards log in with their own account and capture each employee's selfie to mark attendance.")
-    st.page_link("pages/2_Guard_Attendance.py", label="Open", icon="➡️")
 
 section_title("🧑‍💼 Employee")
 with st.container(border=True):
