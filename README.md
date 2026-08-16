@@ -9,7 +9,7 @@ AI agent for natural-language queries over the same data.
 - **UI**: Streamlit (multi-page app)
 - **Face recognition**: DeepFace + OpenCV
 - **Database**: SQLite via SQLAlchemy
-- **AI agent**: LangChain (tool-calling) + LangGraph (bulk payroll workflow) + Anthropic Claude
+- **AI agent**: LangChain (tool-calling) + LangGraph (bulk payroll workflow) + OpenAI (gpt-4o-mini)
 - **Payslips**: ReportLab-generated PDFs
 
 ## Setup
@@ -24,7 +24,7 @@ AI agent for natural-language queries over the same data.
    pip install -r requirements.txt
    ```
 3. Copy `.env.example` to `.env` and fill in:
-   - `ANTHROPIC_API_KEY` — required for the AI Agent page
+   - `OPENAI_API_KEY` — required for the AI Agent page
    - `ADMIN_PASSWORD` — password for admin-only pages
    - Other values have sensible defaults
 4. Run the app:

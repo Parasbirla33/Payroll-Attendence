@@ -1,14 +1,14 @@
-"""Anthropic Claude LLM factory used by the chat agent and LangGraph workflow."""
+"""OpenAI LLM factory used by the chat agent and LangGraph workflow."""
 from __future__ import annotations
 
-from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 
 from config import settings
 
 
-def get_llm() -> ChatAnthropic:
-    return ChatAnthropic(
-        model=settings.anthropic_model,
-        api_key=settings.anthropic_api_key,
+def get_llm() -> ChatOpenAI:
+    return ChatOpenAI(
+        model=settings.openai_model,
+        api_key=settings.openai_api_key,
         temperature=0,
     )

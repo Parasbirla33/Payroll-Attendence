@@ -44,8 +44,8 @@ def _get_int(name: str, default: int) -> int:
 
 @dataclass(frozen=True)
 class Settings:
-    anthropic_api_key: str = _get("ANTHROPIC_API_KEY", "")
-    anthropic_model: str = _get("ANTHROPIC_MODEL", "claude-opus-5")
+    openai_api_key: str = _get("OPENAI_API_KEY", "")
+    openai_model: str = _get("OPENAI_MODEL", "gpt-4o-mini")
 
     admin_password: str = _get("ADMIN_PASSWORD", "change-me")
 
