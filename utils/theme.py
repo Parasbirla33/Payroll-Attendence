@@ -3,6 +3,8 @@ every page looks and feels like one premium product instead of default
 Streamlit chrome."""
 from __future__ import annotations
 
+import textwrap
+
 import streamlit as st
 
 _CSS = """
@@ -238,8 +240,11 @@ def logo_svg(size: int = 28) -> str:
 
 
 def brand_lockup() -> str:
-    """Logo mark + wordmark + tagline, as used at the top of the sidebar."""
-    return f"""
+    """Logo mark + wordmark + tagline, as used at the top of the sidebar.
+    Rendered as a single unindented line — Streamlit's markdown parser treats
+    4+ leading spaces on a block's first line as a code fence, which silently
+    turned this into a literal text dump instead of rendered HTML."""
+    html = f"""
     <div style="display:flex;align-items:center;gap:0.6rem;padding:0.9rem 0.9rem 1rem;
         margin:-1rem -1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.10);">
         {logo_svg(30)}
@@ -250,6 +255,7 @@ def brand_lockup() -> str:
         </div>
     </div>
     """
+    return " ".join(line.strip() for line in html.splitlines())
 
 
 def apply_theme() -> None:
