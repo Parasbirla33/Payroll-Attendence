@@ -2,6 +2,8 @@
 LangGraph's prebuilt ReAct agent over the tools in agent/tools.py."""
 from __future__ import annotations
 
+from datetime import date
+
 from langgraph.prebuilt import create_react_agent
 
 from agent.llm import get_llm
@@ -27,7 +29,14 @@ def _get_agent():
 def run(user_input: str, history: list[dict]) -> str:
     """history is a list of {"role": "user"|"assistant", "content": str}."""
     agent = _get_agent()
-    messages = [(m["role"], m["content"]) for m in history]
+    # Computed fresh per call (not baked into the static system prompt) so a
+    # long-running server process doesn't answer "yesterday" with a stale date.
+    today_note = (
+        "system",
+        f"Today's date is {date.today().isoformat()} (YYYY-MM-DD). "
+        "Resolve any relative date reference (yesterday, this month, last month, etc.) against this.",
+    )
+    messages = [today_note] + [(m["role"], m["content"]) for m in history]
     messages.append(("user", user_input))
     result = agent.invoke({"messages": messages})
     return result["messages"][-1].content

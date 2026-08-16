@@ -32,7 +32,8 @@ def list_employees(active_only: bool = True) -> str:
     if not employees:
         return "No employees found."
     return "\n".join(
-        f"{e.employee_code} — {e.full_name} ({e.designation or 'n/a'}, {e.department or 'n/a'})"
+        f"{e.employee_code} — {e.full_name} ({e.designation or 'n/a'}, {e.department or 'n/a'}), "
+        f"base salary: {e.base_salary}"
         for e in employees
     )
 
@@ -62,6 +63,8 @@ def register_employee(
 ) -> str:
     """Create a new employee profile (metadata only — face photos must still
     be captured via the Employee Enrollment page's camera)."""
+    if crud.get_employee_by_code(employee_code):
+        return f"An employee with code {employee_code} already exists. Choose a different employee_code."
     employee = crud.create_employee(
         employee_code=employee_code,
         full_name=full_name,
