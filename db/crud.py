@@ -6,9 +6,18 @@ import json
 from datetime import date, datetime, timedelta
 
 from sqlalchemy import select
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from db.database import SessionLocal
-from db.models import Attendance, AttendanceStatus, CompanyConfig, Employee, FaceEmbedding, Payroll
+from db.models import (
+    Attendance,
+    AttendanceStatus,
+    CompanyConfig,
+    Employee,
+    FaceEmbedding,
+    Guard,
+    Payroll,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -99,6 +108,63 @@ def resolve_employees(query: str) -> list[Employee]:
             select(Employee).where(Employee.full_name.ilike(f"%{query}%"))
         ).scalars().all()
         return list(by_name)
+
+
+# ---------------------------------------------------------------------------
+# Guards
+# ---------------------------------------------------------------------------
+
+def create_guard(username: str, password: str, full_name: str | None = None) -> Guard:
+    with SessionLocal() as session:
+        guard = Guard(
+            username=username,
+            password_hash=generate_password_hash(password),
+            full_name=full_name,
+        )
+        session.add(guard)
+        session.commit()
+        session.refresh(guard)
+        return guard
+
+
+def get_guard_by_username(username: str) -> Guard | None:
+    with SessionLocal() as session:
+        stmt = select(Guard).where(Guard.username == username)
+        return session.execute(stmt).scalar_one_or_none()
+
+
+def verify_guard_login(username: str, password: str) -> Guard | None:
+    guard = get_guard_by_username(username)
+    if guard is None or not guard.active:
+        return None
+    if not check_password_hash(guard.password_hash, password):
+        return None
+    return guard
+
+
+def list_guards(active_only: bool = True) -> list[Guard]:
+    with SessionLocal() as session:
+        stmt = select(Guard)
+        if active_only:
+            stmt = stmt.where(Guard.active.is_(True))
+        stmt = stmt.order_by(Guard.username)
+        return list(session.execute(stmt).scalars().all())
+
+
+def set_guard_active(guard_id: int, active: bool) -> None:
+    with SessionLocal() as session:
+        guard = session.get(Guard, guard_id)
+        if guard:
+            guard.active = active
+            session.commit()
+
+
+def set_guard_password(guard_id: int, new_password: str) -> None:
+    with SessionLocal() as session:
+        guard = session.get(Guard, guard_id)
+        if guard:
+            guard.password_hash = generate_password_hash(new_password)
+            session.commit()
 
 
 # ---------------------------------------------------------------------------

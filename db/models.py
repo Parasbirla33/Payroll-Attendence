@@ -116,6 +116,17 @@ class Payroll(Base):
     employee: Mapped[Employee] = relationship(back_populates="payroll_records")
 
 
+class Guard(Base):
+    __tablename__ = "guards"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    username: Mapped[str] = mapped_column(String(50), unique=True, index=True)
+    password_hash: Mapped[str] = mapped_column(String(255))
+    full_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
 class CompanyConfig(Base):
     __tablename__ = "company_config"
 

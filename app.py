@@ -1,5 +1,5 @@
-"""Entry point: page config, DB init, landing page with public employee links
-and an admin-gated dashboard summary."""
+"""Entry point: page config, DB init, and a landing page organized into the
+three access roles — Guard, Employee, Admin."""
 from __future__ import annotations
 
 import streamlit as st
@@ -15,21 +15,20 @@ init_db()
 
 page_header("🧾", "Attendance & Payroll", "AI-powered attendance tracking and payroll, in one place.")
 
-section_title("Employee self-service")
-col1, col2 = st.columns(2)
-with col1:
-    with st.container(border=True):
-        st.markdown("**📸 Mark Attendance**")
-        st.caption("Check in or out with a selfie — no login needed.")
-        st.page_link("pages/2_Attendance_Checkin.py", label="Open", icon="➡️")
-with col2:
-    with st.container(border=True):
-        st.markdown("**🧾 My Payslip**")
-        st.caption("Look up your payslips by employee code.")
-        st.page_link("pages/6_My_Payslip.py", label="Open", icon="➡️")
+section_title("🛡️ Guard")
+with st.container(border=True):
+    st.markdown("**Guard Attendance**")
+    st.caption("Guards log in with their own account and capture each employee's selfie to mark attendance.")
+    st.page_link("pages/2_Guard_Attendance.py", label="Open", icon="➡️")
+
+section_title("🧑‍💼 Employee")
+with st.container(border=True):
+    st.markdown("**Employee Portal**")
+    st.caption("Enter your employee code to view your attendance history and download payslips.")
+    st.page_link("pages/6_Employee_Portal.py", label="Open", icon="➡️")
 
 st.divider()
-section_title("Admin")
+section_title("🔑 Admin")
 
 if not is_admin():
     with st.container(border=True):
@@ -49,6 +48,7 @@ else:
     section_title("Admin pages")
     admin_pages = [
         ("👤", "Employee Enrollment", "Add employees and capture face photos.", "pages/1_Employee_Enrollment.py"),
+        ("🛡️", "Guard Management", "Create and manage guard accounts.", "pages/7_Guard_Management.py"),
         ("📊", "Attendance Reports", "Filter, review, and export attendance.", "pages/3_Attendance_Reports.py"),
         ("💰", "Payroll", "Generate payslips, single or in bulk.", "pages/4_Payroll.py"),
         ("🤖", "AI Agent", "Ask questions about attendance and payroll.", "pages/5_AI_Agent.py"),
