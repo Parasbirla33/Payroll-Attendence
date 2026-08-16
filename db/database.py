@@ -7,9 +7,19 @@ from sqlalchemy.orm import Session, sessionmaker
 from config import settings
 from db.models import Base, CompanyConfig
 
+# SQLAlchemy 2.x rejects the legacy "postgres://" scheme some providers
+# (including Supabase's older docs/tooling) still hand out; normalize it.
+_database_url = settings.database_url
+if _database_url.startswith("postgres://"):
+    _database_url = _database_url.replace("postgres://", "postgresql://", 1)
+
 engine = create_engine(
-    settings.database_url,
-    connect_args={"check_same_thread": False} if settings.database_url.startswith("sqlite") else {},
+    _database_url,
+    connect_args={"check_same_thread": False} if _database_url.startswith("sqlite") else {},
+    # Postgres connections can be silently dropped by the provider after
+    # idling (Supabase does this); pre-ping avoids "connection closed"
+    # errors on the first query after a gap instead of surfacing them to users.
+    pool_pre_ping=not _database_url.startswith("sqlite"),
 )
 SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 
