@@ -207,7 +207,10 @@ def generate_payslip(employee_query: str, month: int, year: int) -> str:
         payslip_path=pdf_path,
         generated_by="agent",
     )
-    return f"Generated payslip for {employee.full_name} ({month}/{year}): net {result['currency_symbol']}{result['net_salary']:.2f}. Saved to {pdf_path}"
+    return (
+        f"Generated payslip for {employee.full_name} ({month}/{year}): "
+        f"net {result['currency_symbol']}{result['net_salary']:.2f}. PDF_PATH::{pdf_path}"
+    )
 
 
 @tool
