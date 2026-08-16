@@ -1,12 +1,14 @@
-"""Admin page: filterable attendance reports with Excel/CSV export."""
+"""Admin page: filterable attendance reports with Excel/CSV export, plus a
+manual attendance override for adding/correcting a single day's record."""
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date, datetime, time, timedelta
 
 import pandas as pd
 import streamlit as st
 
 from db import crud
+from db.models import AttendanceStatus
 from utils.auth import require_admin
 from utils.export_utils import to_csv_bytes, to_excel_bytes
 from utils.theme import apply_theme, page_header
@@ -72,3 +74,32 @@ else:
         type="primary",
     )
     dl2.download_button("⬇️ Download CSV", to_csv_bytes(df), "attendance_report.csv", mime="text/csv")
+
+st.divider()
+with st.expander("✏️ Manual attendance override"):
+    active_employees = [e for e in employees if e.active]
+    if not active_employees:
+        st.info("No active employees enrolled yet.")
+    else:
+        override_options = {f"{e.full_name} ({e.employee_code})": e.id for e in active_employees}
+        label = st.selectbox("Employee", list(override_options.keys()), key="override_employee")
+        override_date = st.date_input("Date", value=date.today(), key="override_date")
+        status = st.selectbox("Status", [s.value for s in AttendanceStatus], key="override_status")
+        has_checkin = st.checkbox("Set check-in time", value=True, key="override_has_checkin")
+        checkin_time = st.time_input("Check-in time", value=time(9, 30), key="override_checkin_time") if has_checkin else None
+        has_checkout = st.checkbox("Set check-out time", value=False, key="override_has_checkout")
+        checkout_time = st.time_input("Check-out time", value=time(18, 30), key="override_checkout_time") if has_checkout else None
+
+        if st.button("Save override", type="primary"):
+            employee_id = override_options[label]
+            check_in_dt = datetime.combine(override_date, checkin_time) if checkin_time else None
+            check_out_dt = datetime.combine(override_date, checkout_time) if checkout_time else None
+            crud.upsert_attendance(
+                employee_id=employee_id,
+                on_date=override_date,
+                check_in=check_in_dt,
+                check_out=check_out_dt,
+                status=AttendanceStatus(status),
+            )
+            st.success("Attendance record saved.")
+            st.rerun()
