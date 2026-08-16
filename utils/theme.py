@@ -210,9 +210,54 @@ footer {visibility: hidden;}
 """
 
 
+BRAND_NAME = "Cadence"
+BRAND_TAGLINE = "Attendance & Payroll, refined"
+
+# Abstract "cadence bars" mark: three rounded bars of different heights on a
+# gradient badge — evokes both a rhythm/pulse (cadence) and an attendance
+# chart. Pure SVG so it renders crisply at any size with no image assets.
+_LOGO_SVG = """
+<svg width="{size}" height="{size}" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="28" height="28" rx="8" fill="url(#cadence-grad)"/>
+    <rect x="6.4" y="15" width="3.2" height="6.5" rx="1.6" fill="white" fill-opacity="0.95"/>
+    <rect x="12.4" y="7" width="3.2" height="14.5" rx="1.6" fill="white"/>
+    <rect x="18.4" y="11.5" width="3.2" height="10" rx="1.6" fill="white" fill-opacity="0.95"/>
+    <defs>
+        <linearGradient id="cadence-grad" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#4F46E5"/>
+            <stop offset="1" stop-color="#7C3AED"/>
+        </linearGradient>
+    </defs>
+</svg>
+"""
+
+
+def logo_svg(size: int = 28) -> str:
+    """Standalone SVG markup for the Cadence mark, e.g. to drop into a page_header icon slot."""
+    return _LOGO_SVG.format(size=size)
+
+
+def brand_lockup() -> str:
+    """Logo mark + wordmark + tagline, as used at the top of the sidebar."""
+    return f"""
+    <div style="display:flex;align-items:center;gap:0.6rem;padding:0.9rem 0.9rem 1rem;
+        margin:-1rem -1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.10);">
+        {logo_svg(30)}
+        <div style="line-height:1.2;">
+            <div style="font-family:'Lexend',sans-serif;font-weight:800;font-size:1.15rem;
+                color:#F5F5FF;letter-spacing:-0.01em;">{BRAND_NAME}</div>
+            <div style="font-size:0.68rem;color:#A5A9D9;font-weight:500;">{BRAND_TAGLINE}</div>
+        </div>
+    </div>
+    """
+
+
 def apply_theme() -> None:
-    """Call once near the top of every page, right after st.set_page_config()."""
+    """Call once near the top of every page, right after st.set_page_config().
+    Also injects the brand lockup at the top of the sidebar on every page."""
     st.markdown(_CSS, unsafe_allow_html=True)
+    with st.sidebar:
+        st.markdown(brand_lockup(), unsafe_allow_html=True)
 
 
 def page_header(icon: str, title: str, subtitle: str = "") -> None:
