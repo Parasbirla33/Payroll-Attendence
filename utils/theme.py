@@ -109,28 +109,29 @@ section[data-testid="stSidebar"] div[data-testid="stAlert"] * { color: inherit !
     padding: 0.5rem 1.25rem;
     transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
-.stButton > button[kind="primary"], .stFormSubmitButton > button[kind="primary"] {
-    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
-    border: none;
+button[kind="primary"], button[kind="primaryFormSubmit"] {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%) !important;
+    border: none !important;
+    color: #fff !important;
     box-shadow: 0 4px 14px -2px rgba(79, 70, 229, 0.45);
 }
-.stButton > button[kind="primary"]:hover, .stFormSubmitButton > button[kind="primary"]:hover {
+button[kind="primary"]:hover, button[kind="primaryFormSubmit"]:hover {
     transform: translateY(-1px);
     box-shadow: 0 8px 20px -4px rgba(79, 70, 229, 0.55);
 }
-.stButton > button[kind="primary"]:active, .stFormSubmitButton > button[kind="primary"]:active {
+button[kind="primary"]:active, button[kind="primaryFormSubmit"]:active {
     transform: translateY(0);
     box-shadow: 0 2px 8px -2px rgba(79, 70, 229, 0.45);
 }
-.stButton > button[kind="secondary"] {
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--ink-soft);
+button[kind="secondary"], button[kind="secondaryFormSubmit"] {
+    border: 1px solid var(--border) !important;
+    background: var(--surface) !important;
+    color: var(--ink-soft) !important;
 }
-.stButton > button[kind="secondary"]:hover {
-    border-color: var(--brand);
-    color: var(--brand-dark);
-    background: var(--brand-light);
+button[kind="secondary"]:hover, button[kind="secondaryFormSubmit"]:hover {
+    border-color: var(--brand) !important;
+    color: var(--brand-dark) !important;
+    background: var(--brand-light) !important;
     transform: translateY(-1px);
 }
 .stDownloadButton > button {
