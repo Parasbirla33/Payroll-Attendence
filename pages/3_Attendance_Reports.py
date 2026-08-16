@@ -13,7 +13,7 @@ from utils.auth import require_admin
 from utils.export_utils import to_csv_bytes, to_excel_bytes
 from utils.theme import apply_theme, page_header
 
-st.set_page_config(page_title="Attendance Reports", page_icon="📊")
+st.set_page_config(page_title="Cadence · Attendance Reports", page_icon="📊")
 apply_theme()
 require_admin()
 

@@ -13,7 +13,7 @@ from services.payslip_generator import generate_pdf
 from utils.auth import require_admin
 from utils.theme import apply_theme, page_header, section_title
 
-st.set_page_config(page_title="Payroll", page_icon="💰")
+st.set_page_config(page_title="Cadence · Payroll", page_icon="💰")
 apply_theme()
 require_admin()
 

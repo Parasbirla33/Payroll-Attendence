@@ -7,7 +7,7 @@ from db import crud
 from utils.auth import require_admin
 from utils.theme import apply_theme, page_header, section_title
 
-st.set_page_config(page_title="Guard Management", page_icon="🛡️")
+st.set_page_config(page_title="Cadence · Guard Management", page_icon="🛡️")
 apply_theme()
 require_admin()
 

@@ -11,7 +11,7 @@ import streamlit as st
 from db import crud
 from utils.theme import apply_theme, page_header, section_title
 
-st.set_page_config(page_title="Employee Portal", page_icon="🧑‍💼")
+st.set_page_config(page_title="Cadence · Employee Portal", page_icon="🧑‍💼")
 apply_theme()
 
 page_header("🧑‍💼", "Employee Portal", "Enter your employee code to view your attendance and payslips.")

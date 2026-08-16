@@ -22,7 +22,7 @@ def _render_payslip_downloads(pdf_paths: list[str], msg_index: int) -> None:
                     key=f"payslip_dl_{msg_index}_{i}",
                 )
 
-st.set_page_config(page_title="AI Agent", page_icon="🤖")
+st.set_page_config(page_title="Cadence · AI Agent", page_icon="🤖")
 apply_theme()
 require_admin()
 

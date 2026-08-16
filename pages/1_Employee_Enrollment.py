@@ -12,7 +12,7 @@ from services.face_recognition import enroll_face
 from utils.auth import require_admin
 from utils.theme import apply_theme, page_header, section_title
 
-st.set_page_config(page_title="Employee Enrollment", page_icon="👤")
+st.set_page_config(page_title="Cadence · Employee Enrollment", page_icon="👤")
 apply_theme()
 require_admin()
 
