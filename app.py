@@ -7,13 +7,13 @@ import streamlit as st
 from db.database import init_db
 from db import crud
 from utils.auth import is_admin, render_admin_login
-from utils.theme import apply_theme, page_header, section_title
+from utils.theme import BRAND_NAME, apply_theme, logo_svg, page_header, section_title
 
-st.set_page_config(page_title="Attendance & Payroll", page_icon="🧾", layout="centered")
+st.set_page_config(page_title=f"{BRAND_NAME} — Attendance & Payroll", page_icon="🧾", layout="centered")
 apply_theme()
 init_db()
 
-page_header("🧾", "Attendance & Payroll", "AI-powered attendance tracking and payroll, in one place.")
+page_header(logo_svg(28), BRAND_NAME, "AI-powered attendance tracking and payroll, in one place.")
 
 section_title("🧑‍💼 Employee")
 with st.container(border=True):
