@@ -107,7 +107,7 @@ section[data-testid="stSidebar"] div[data-testid="stAlert"] * { color: inherit !
     border-radius: 10px;
     font-weight: 600;
     padding: 0.5rem 1.25rem;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 .stButton > button[kind="primary"], .stFormSubmitButton > button[kind="primary"] {
     background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
@@ -118,6 +118,21 @@ section[data-testid="stSidebar"] div[data-testid="stAlert"] * { color: inherit !
     transform: translateY(-1px);
     box-shadow: 0 8px 20px -4px rgba(79, 70, 229, 0.55);
 }
+.stButton > button[kind="primary"]:active, .stFormSubmitButton > button[kind="primary"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px -2px rgba(79, 70, 229, 0.45);
+}
+.stButton > button[kind="secondary"] {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink-soft);
+}
+.stButton > button[kind="secondary"]:hover {
+    border-color: var(--brand);
+    color: var(--brand-dark);
+    background: var(--brand-light);
+    transform: translateY(-1px);
+}
 .stDownloadButton > button {
     border: 1px solid var(--border);
     background: var(--surface);
@@ -125,7 +140,43 @@ section[data-testid="stSidebar"] div[data-testid="stAlert"] * { color: inherit !
 .stDownloadButton > button:hover {
     border-color: var(--brand);
     color: var(--brand-dark);
+    background: var(--brand-light);
     transform: translateY(-1px);
+}
+.stButton > button:active, .stDownloadButton > button:active, .stFormSubmitButton > button:active {
+    transform: scale(0.98);
+}
+
+/* ---------------- Expanders: cards with a distinct header row ---------------- */
+div[data-testid="stExpander"] {
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+div[data-testid="stExpander"] summary {
+    font-weight: 700;
+    font-family: 'Lexend', sans-serif;
+    padding: 0.9rem 1.1rem !important;
+    transition: background 0.15s ease;
+}
+div[data-testid="stExpander"] summary:hover {
+    background: var(--brand-light);
+}
+div[data-testid="stExpander"] > div > div {
+    padding: 0.25rem 1.1rem 1.1rem !important;
+}
+
+/* ---------------- Radio / checkbox ---------------- */
+div[data-testid="stRadio"] label, div[data-testid="stCheckbox"] label {
+    font-weight: 500;
+}
+
+/* ---------------- Select dropdown popover ---------------- */
+ul[data-testid="stSelectboxVirtualDropdown"] li:hover,
+li[role="option"]:hover {
+    background: var(--brand-light) !important;
 }
 
 /* ---------------- Metrics as premium cards ---------------- */
@@ -154,7 +205,11 @@ div[data-testid="stVerticalBlockBorderWrapper"] {
     border-color: var(--border) !important;
     background: var(--surface);
     box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+div[data-testid="stVerticalBlockBorderWrapper"]:hover {
+    box-shadow: var(--shadow-md);
+    border-color: #D9DCEF !important;
 }
 
 /* ---------------- Inputs ---------------- */
@@ -177,10 +232,12 @@ div[data-testid="stVerticalBlockBorderWrapper"] {
     height: 3px !important;
 }
 
-/* Alerts: slightly softer corners to match the rest of the UI */
+/* Alerts: softer corners + a touch of depth so they read as cards, not flat banners */
 div[data-testid="stAlert"] {
     border-radius: 12px;
     border: 1px solid transparent;
+    box-shadow: var(--shadow-sm);
+    font-weight: 500;
 }
 
 /* Dataframes / tables */
@@ -188,12 +245,60 @@ div[data-testid="stAlert"] {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
 }
 
 /* Chat bubbles on the AI Agent page */
 [data-testid="stChatMessage"] {
     border-radius: 14px;
     box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+}
+[data-testid="stChatInput"] {
+    border-radius: 14px;
+}
+[data-testid="stChatInput"] textarea {
+    border-radius: 14px !important;
+}
+
+/* Camera / file upload widgets */
+[data-testid="stCameraInput"], [data-testid="stFileUploader"] {
+    border-radius: 14px;
+    overflow: hidden;
+}
+[data-testid="stFileUploaderDropzone"] {
+    border-radius: 14px !important;
+    border: 1.5px dashed var(--border) !important;
+    background: var(--brand-light) !important;
+    transition: border-color 0.15s ease;
+}
+[data-testid="stFileUploaderDropzone"]:hover {
+    border-color: var(--brand) !important;
+}
+
+/* Number input steppers */
+[data-testid="stNumberInputStepUp"], [data-testid="stNumberInputStepDown"] {
+    border-radius: 6px;
+}
+
+/* Slim, premium scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: rgba(79, 70, 229, 0.25);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(79, 70, 229, 0.45); background-clip: padding-box; }
+
+/* Gentle fade-and-rise entrance for the whole page on every navigation/rerun */
+.block-container {
+    animation: cadence-fade-in 0.35s ease-out;
+}
+@keyframes cadence-fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Hide default Streamlit chrome for a cleaner product feel */
