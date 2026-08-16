@@ -25,3 +25,9 @@ def init_db() -> None:
 
 def get_session() -> Session:
     return SessionLocal()
+
+
+# Run once automatically on first import of this module, so tables exist
+# regardless of which page a user lands on first (not every page/deep-link
+# necessarily goes through app.py's explicit init_db() call).
+init_db()
