@@ -35,9 +35,9 @@ html, body, [class*="css"] {
     --danger-bg: #FEF2F2;
     --warning: #B45309;
     --warning-bg: #FFFBEB;
-    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-    --shadow-md: 0 6px 20px -4px rgba(30, 27, 75, 0.10), 0 2px 6px rgba(15, 23, 42, 0.05);
-    --shadow-lift: 0 12px 28px -8px rgba(30, 27, 75, 0.18), 0 4px 10px rgba(15, 23, 42, 0.06);
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 16px -8px rgba(30, 27, 75, 0.14);
+    --shadow-lift: 0 2px 4px rgba(15, 23, 42, 0.05), 0 16px 28px -10px rgba(30, 27, 75, 0.20);
 }
 
 /* App backdrop: soft brand-tinted gradient wash instead of flat white */
@@ -66,25 +66,37 @@ html, body, [class*="css"] {
 
 h1, h2, h3 { font-family: 'Lexend', 'Inter', sans-serif; letter-spacing: -0.01em; }
 
+/* Section dividers: a hairline instead of Streamlit's default heavy gray rule */
+[data-testid="stMain"] hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.6rem 0;
+}
+
 /* ---------------- Sidebar: dark premium nav rail ---------------- */
 section[data-testid="stSidebar"] {
-    background: linear-gradient(195deg, #0F172A 0%, #191340 65%, #241B54 100%);
+    background: linear-gradient(180deg, #0B0D17 0%, #12101F 100%);
     border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
-section[data-testid="stSidebar"] * { color: #E2E4F3 !important; }
+section[data-testid="stSidebar"] * { color: #C7C9DB !important; }
 section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a,
 section[data-testid="stSidebar"] .stPageLink a {
-    border-radius: 9px;
+    border-radius: 8px;
     margin: 1px 0;
-    transition: background 0.15s ease, transform 0.15s ease;
+    font-weight: 500;
+    transition: background 0.12s ease;
 }
 section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a:hover,
 section[data-testid="stSidebar"] .stPageLink a:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
 }
 section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a[aria-current="page"] {
-    background: linear-gradient(90deg, rgba(124, 58, 237, 0.35), rgba(124, 58, 237, 0.08)) !important;
+    background: rgba(124, 58, 237, 0.16) !important;
     box-shadow: inset 2px 0 0 var(--gold);
+}
+section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a[aria-current="page"] span {
+    color: #F5F5FF !important;
+    font-weight: 600 !important;
 }
 section[data-testid="stSidebar"] hr { border-color: rgba(255, 255, 255, 0.10); }
 section[data-testid="stSidebar"] input,
@@ -113,15 +125,15 @@ button[kind="primary"], button[kind="primaryFormSubmit"] {
     background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%) !important;
     border: none !important;
     color: #fff !important;
-    box-shadow: 0 4px 14px -2px rgba(79, 70, 229, 0.45);
+    box-shadow: 0 1px 2px rgba(55, 48, 163, 0.30), 0 4px 10px -4px rgba(79, 70, 229, 0.45);
 }
 button[kind="primary"]:hover, button[kind="primaryFormSubmit"]:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 20px -4px rgba(79, 70, 229, 0.55);
+    box-shadow: 0 1px 2px rgba(55, 48, 163, 0.30), 0 8px 16px -6px rgba(79, 70, 229, 0.50);
 }
 button[kind="primary"]:active, button[kind="primaryFormSubmit"]:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px -2px rgba(79, 70, 229, 0.45);
+    box-shadow: 0 1px 2px rgba(55, 48, 163, 0.30);
 }
 button[kind="secondary"], button[kind="secondaryFormSubmit"] {
     border: 1px solid var(--border) !important;
@@ -182,19 +194,24 @@ li[role="option"]:hover {
 
 /* ---------------- Metrics as premium cards ---------------- */
 div[data-testid="stMetric"] {
-    background: linear-gradient(165deg, var(--surface) 0%, #FBFBFE 100%);
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 14px;
     padding: 1.1rem 1.3rem;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
     position: relative;
     overflow: hidden;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+div[data-testid="stMetric"]:hover {
+    box-shadow: var(--shadow-md);
+    border-color: #D9DCEF;
 }
 div[data-testid="stMetric"]::before {
     content: "";
     position: absolute;
     top: 0; left: 0; bottom: 0;
-    width: 3px;
+    width: 2.5px;
     background: linear-gradient(180deg, var(--brand), var(--brand-2));
 }
 div[data-testid="stMetricLabel"] { color: var(--muted); font-weight: 600; }
@@ -404,30 +421,24 @@ def page_header(icon: str, title: str, subtitle: str = "") -> None:
         else ""
     )
     html = f"""
-    <div style="position:relative;overflow:hidden;border-radius:20px;
-        padding:1.85rem 1.9rem 1.6rem;margin-bottom:1.85rem;
+    <div style="position:relative;overflow:hidden;border-radius:18px;
+        padding:1.7rem 1.9rem 1.5rem;margin-bottom:1.85rem;
         background:linear-gradient(165deg, #FBFBFE 0%, #F5F4FC 100%);
         border:1px solid var(--border);box-shadow:var(--shadow-sm);">
-        <div style="position:absolute;top:-60px;right:-40px;width:220px;height:220px;
-            border-radius:50%;background:radial-gradient(circle, rgba(124,58,237,0.20), transparent 70%);
-            filter:blur(6px);"></div>
-        <div style="position:absolute;bottom:-70px;right:90px;width:180px;height:180px;
-            border-radius:50%;background:radial-gradient(circle, rgba(79,70,229,0.14), transparent 70%);
-            filter:blur(6px);"></div>
-        <div style="position:absolute;top:-40px;left:40%;width:140px;height:140px;
-            border-radius:50%;background:radial-gradient(circle, rgba(201,162,75,0.16), transparent 70%);
-            filter:blur(6px);"></div>
+        <div style="position:absolute;top:-90px;right:-60px;width:260px;height:260px;
+            border-radius:50%;background:radial-gradient(circle, rgba(124,58,237,0.14), transparent 72%);
+            filter:blur(4px);"></div>
         <div style="position:relative;">
             <div style="display:flex;align-items:center;gap:0.75rem;">
-                <div style="width:2.75rem;height:2.75rem;border-radius:12px;flex-shrink:0;
-                    display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+                <div style="width:2.6rem;height:2.6rem;border-radius:11px;flex-shrink:0;
+                    display:flex;align-items:center;justify-content:center;font-size:1.35rem;
                     background:linear-gradient(135deg, var(--brand-light), #F3EEFF);
                     box-shadow: inset 0 0 0 1px rgba(79,70,229,0.12);">{icon}</div>
                 <div style="font-family:'Lexend',sans-serif;font-size:1.95rem;font-weight:800;
-                    color:var(--ink);line-height:1.15;">{title}</div>
+                    color:var(--ink);line-height:1.15;letter-spacing:-0.02em;">{title}</div>
             </div>
             {subtitle_html}
-            <div style="height:3px;width:56px;margin-top:1rem;border-radius:999px;
+            <div style="height:3px;width:44px;margin-top:1rem;border-radius:999px;
                 background:linear-gradient(90deg, var(--brand), var(--brand-2));"></div>
         </div>
     </div>
@@ -456,6 +467,6 @@ def badge(text: str, kind: str = "brand") -> str:
     }
     bg, fg = colors.get(kind, colors["brand"])
     return (
-        f'<span style="background:{bg};color:{fg};padding:0.2rem 0.7rem;'
-        f'border-radius:999px;font-size:0.78rem;font-weight:700;letter-spacing:0.01em;">{text}</span>'
+        f'<span style="background:{bg};color:{fg};padding:0.18rem 0.65rem;'
+        f'border-radius:6px;font-size:0.75rem;font-weight:600;letter-spacing:0.01em;">{text}</span>'
     )
