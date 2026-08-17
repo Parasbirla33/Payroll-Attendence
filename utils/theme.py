@@ -364,10 +364,30 @@ def brand_lockup() -> str:
     return " ".join(line.strip() for line in html.splitlines())
 
 
+def top_bar() -> str:
+    """Slim sticky brand strip for the very top of the main content panel —
+    the area above the aurora page header that was previously blank."""
+    html = f"""
+    <div style="position:sticky;top:0;z-index:900;display:flex;align-items:center;gap:0.55rem;
+        padding:0.7rem 0.1rem;margin:-1.6rem 0 1.4rem;
+        background:rgba(247,247,251,0.88);backdrop-filter:blur(10px);
+        border-bottom:1px solid var(--border);">
+        {logo_svg(24)}
+        <span style="font-family:'Lexend',sans-serif;font-weight:800;font-size:1rem;
+            color:var(--ink);letter-spacing:-0.01em;">{BRAND_NAME}</span>
+        <span style="width:1px;height:14px;background:var(--border);"></span>
+        <span style="font-size:0.78rem;color:var(--muted);font-weight:500;">{BRAND_TAGLINE}</span>
+    </div>
+    """
+    return " ".join(line.strip() for line in html.splitlines())
+
+
 def apply_theme() -> None:
     """Call once near the top of every page, right after st.set_page_config().
-    Also injects the brand lockup at the top of the sidebar on every page."""
+    Also injects the brand lockup at the top of the sidebar, and a sticky
+    brand strip at the top of the main content panel, on every page."""
     st.markdown(_CSS, unsafe_allow_html=True)
+    st.markdown(top_bar(), unsafe_allow_html=True)
     with st.sidebar:
         st.markdown(brand_lockup(), unsafe_allow_html=True)
 
