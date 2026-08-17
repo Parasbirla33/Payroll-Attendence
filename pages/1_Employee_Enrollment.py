@@ -8,7 +8,7 @@ import streamlit as st
 
 from config import settings
 from db import crud
-from services.face_recognition import enroll_face
+from services.face_recognition import enroll_face, photo_matches_employee
 from utils.auth import require_admin
 from utils.theme import apply_theme, page_header, section_title
 
@@ -64,24 +64,39 @@ else:
 
         face_dir = os.path.join(settings.faces_dir, f"employee_{employee_id}")
         existing_count = len(os.listdir(face_dir)) if os.path.isdir(face_dir) else 0
-        st.caption(f"📷 {existing_count} photo(s) enrolled so far. Capture 3-5 for reliable recognition.")
+        max_photos = 2
+        st.caption(f"📷 {existing_count}/{max_photos} photo(s) enrolled.")
 
         if "enroll_cam_key" not in st.session_state:
             st.session_state.enroll_cam_key = 0
 
-        photo = st.camera_input(
-            "Take a photo (vary angle/expression slightly between shots)",
-            key=f"enroll_cam_{st.session_state.enroll_cam_key}",
-        )
+        if existing_count >= max_photos:
+            st.success("Enrollment complete — 2 matching photos on file.")
+        else:
+            photo = st.camera_input(
+                "Take a photo" if existing_count == 0 else "Take a second photo of the SAME person",
+                key=f"enroll_cam_{st.session_state.enroll_cam_key}",
+            )
 
-        if photo is not None and st.button("Save this photo", type="primary"):
-            ok, message = enroll_face(employee_id, photo.getvalue(), existing_count + 1)
-            if ok:
-                st.success(message)
+            if photo is not None and st.button("Save this photo", type="primary"):
+                rejected = False
+                if existing_count > 0:
+                    matched, distance, message = photo_matches_employee(employee_id, photo.getvalue())
+                    if not matched:
+                        st.error(message)
+                        rejected = True
+
+                if not rejected:
+                    ok, message = enroll_face(employee_id, photo.getvalue(), existing_count + 1)
+                    if ok:
+                        st.success(message)
+                    else:
+                        st.error(message)
+                        rejected = True
+
                 st.session_state.enroll_cam_key += 1
-                st.rerun()
-            else:
-                st.error(message)
+                if not rejected:
+                    st.rerun()
 
 section_title("Employees")
 
