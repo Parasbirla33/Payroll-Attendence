@@ -195,6 +195,15 @@ def get_all_face_embeddings(model_name: str) -> list[tuple[int, list[float]]]:
         return [(row.employee_id, json.loads(row.embedding)) for row in rows]
 
 
+def get_face_embeddings_for_employee(employee_id: int, model_name: str) -> list[list[float]]:
+    with SessionLocal() as session:
+        stmt = select(FaceEmbedding).where(
+            FaceEmbedding.employee_id == employee_id, FaceEmbedding.model_name == model_name
+        )
+        rows = session.execute(stmt).scalars().all()
+        return [json.loads(row.embedding) for row in rows]
+
+
 # ---------------------------------------------------------------------------
 # Attendance
 # ---------------------------------------------------------------------------
