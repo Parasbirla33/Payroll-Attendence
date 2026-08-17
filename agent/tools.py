@@ -40,6 +40,13 @@ def list_employees(active_only: bool = True) -> str:
 
 
 @tool
+def count_employees(active_only: bool = True) -> str:
+    """Count employees. Set active_only=False to include deactivated employees.
+    Use this instead of counting the results of list_employees yourself."""
+    return str(crud.count_employees(active_only=active_only))
+
+
+@tool
 def get_employee_info(query: str) -> str:
     """Look up an employee's profile by name or employee code."""
     employee, error = _resolve_single(query)
@@ -237,6 +244,7 @@ def get_company_config() -> str:
 
 ALL_TOOLS = [
     list_employees,
+    count_employees,
     get_employee_info,
     register_employee,
     get_attendance_summary,
