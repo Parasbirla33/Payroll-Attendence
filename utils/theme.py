@@ -371,7 +371,7 @@ def top_bar() -> str:
     Cloud's own fixed toolbar (Share / star / pencil / GitHub icons)."""
     html = f"""
     <div style="display:flex;align-items:center;gap:0.55rem;
-        padding:0 0 0.9rem;margin:-1.1rem 0 1.2rem;
+        padding:0 0 0.9rem;margin:0 0 1.2rem;
         border-bottom:1px solid var(--border);">
         {logo_svg(24)}
         <span style="font-family:'Lexend',sans-serif;font-weight:800;font-size:1rem;
