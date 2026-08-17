@@ -365,12 +365,13 @@ def brand_lockup() -> str:
 
 
 def top_bar() -> str:
-    """Slim sticky brand strip for the very top of the main content panel —
-    the area above the aurora page header that was previously blank."""
+    """Slim brand strip for the very top of the main content panel — the area
+    above the aurora page header that was previously blank. A plain block
+    element (not sticky/fixed) so it can't be clipped under Streamlit
+    Cloud's own fixed toolbar (Share / star / pencil / GitHub icons)."""
     html = f"""
-    <div style="position:sticky;top:0;z-index:900;display:flex;align-items:center;gap:0.55rem;
-        padding:0.7rem 0.1rem;margin:-1.6rem 0 1.4rem;
-        background:rgba(247,247,251,0.88);backdrop-filter:blur(10px);
+    <div style="display:flex;align-items:center;gap:0.55rem;
+        padding:0 0 0.9rem;margin:-1.1rem 0 1.2rem;
         border-bottom:1px solid var(--border);">
         {logo_svg(24)}
         <span style="font-family:'Lexend',sans-serif;font-weight:800;font-size:1rem;
