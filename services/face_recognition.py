@@ -65,6 +65,24 @@ def enroll_face(employee_id: int, image_bytes: bytes, photo_index: int) -> tuple
     return True, "Photo enrolled."
 
 
+def photo_matches_employee(employee_id: int, image_bytes: bytes) -> tuple[bool, float | None, str]:
+    """Check a candidate photo's face against an employee's already-enrolled
+    photo(s). Used to reject a second enrollment photo that isn't the same
+    person as the first."""
+    embedding = _represent(image_bytes, enforce_detection=True)
+    if embedding is None:
+        return False, None, "No face detected in that photo — please retake it."
+
+    stored = crud.get_face_embeddings_for_employee(employee_id, settings.face_match_model)
+    if not stored:
+        return True, None, "No prior photo to compare against."
+
+    best_distance = min(_cosine_distance(embedding, e) for e in stored)
+    if best_distance > settings.face_match_threshold:
+        return False, best_distance, "This photo doesn't match the first one enrolled — please retake with the same person."
+    return True, best_distance, "Matched."
+
+
 def recognize_face(image_bytes: bytes) -> tuple[Employee | None, float | None, str]:
     """Match a captured frame against all enrolled employees.
     Returns (employee_or_None, best_distance_or_None, message)."""
