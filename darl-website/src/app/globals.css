@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+@theme {
+  --color-white: #ffffff;
+  --color-ink: #102a43;
+  --color-ink-soft: #486581;
+  --color-ink-muted: #627d98;
+  --color-navy: #063b73;
+  --color-navy-deep: #04284f;
+  --color-navy-night: #031b36;
+  --color-blue: #0a4d8c;
+  --color-blue-bright: #1f6fbf;
+  --color-sky: #eaf5ff;
+  --color-sky-deep: #d5e9fb;
+  --color-line: #dbe7f3;
+  --color-cyan: #3aa8d8;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-manrope), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-lab: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --shadow-card: 0 1px 2px rgb(16 42 67 / 0.04), 0 8px 24px -12px rgb(16 42 67 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(16 42 67 / 0.04), 0 24px 48px -20px rgb(6 59 115 / 0.28);
+  --shadow-film: 0 40px 80px -32px rgb(6 59 115 / 0.45), 0 12px 24px -12px rgb(16 42 67 / 0.18);
+
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-pulse-dot: pulse-dot 2.4s var(--ease-lab) infinite;
+  --animate-scan: scan 5s var(--ease-lab) infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes pulse-dot {
+    0% { box-shadow: 0 0 0 0 rgb(58 168 216 / 0.55); }
+    70% { box-shadow: 0 0 0 10px rgb(58 168 216 / 0); }
+    100% { box-shadow: 0 0 0 0 rgb(58 168 216 / 0); }
+  }
+  @keyframes scan {
+    0% { transform: translateY(-100%); opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { transform: translateY(100%); opacity: 0; }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white font-sans text-ink antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight text-ink;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  ::selection { background: var(--color-sky-deep); color: var(--color-navy); }
+  :focus-visible {
+    outline: 2px solid var(--color-blue-bright);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  .container-lab {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .eyebrow {
+    @apply inline-flex items-center gap-2.5 font-display text-[0.72rem] font-bold uppercase tracking-[0.22em] text-blue;
+  }
+  .eyebrow::before {
+    content: "";
+    @apply h-px w-7 bg-current opacity-70;
+  }
+  .section-title {
+    @apply font-display text-3xl font-extrabold leading-[1.1] sm:text-4xl lg:text-[2.75rem];
+  }
+  .section-lead {
+    @apply mt-4 max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-navy px-6 py-3.5 font-display text-sm font-bold text-white shadow-[0_10px_30px_-10px_rgb(6_59_115/0.6)] transition duration-300 ease-lab hover:-translate-y-0.5 hover:bg-blue;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-navy/15 bg-white/70 px-6 py-3.5 font-display text-sm font-bold text-navy backdrop-blur transition duration-300 ease-lab hover:border-navy/35 hover:bg-white;
+  }
+  /* Faint measurement grid used behind sections */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgb(6 59 115 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(6 59 115 / 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .field {
+    @apply w-full rounded-xl border border-line bg-white px-4 py-3 text-[0.95rem] text-ink placeholder:text-ink-muted/70 transition focus:border-blue-bright focus:outline-none focus:ring-4 focus:ring-blue-bright/10;
+  }
+  .field[aria-invalid="true"] {
+    @apply border-red-400 focus:ring-red-400/15;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Hero evidence trace: draws like a detector signal, then holds. */
+.hero-trace {
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  animation: trace-draw 3.2s 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes trace-draw {
+  to { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-trace { stroke-dashoffset: 0; animation: none; }
+}
